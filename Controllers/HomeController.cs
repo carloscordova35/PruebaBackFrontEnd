@@ -101,6 +101,38 @@ namespace PruebaBackFrontEnd.Controllers
             return View(students.ToList());
         }
 
+        public IActionResult CrearMov() {
+
+            return View();
+        }
+
+        public IActionResult Mov() {
+            return View();
+        }
+
+        public IActionResult AgregaMov(Movimiento movn) {
+
+            System.Diagnostics.Debug.WriteLine("tipo: " + movn.tipomov);
+
+            IList<Movimiento.DetalleM> _TableForm = new List<Movimiento.DetalleM>();
+
+            //Loop through the forms
+            for (int i = 0; i <= Request.Form.Count; i++)
+            {
+                var ClientSampleID = Request.Form["ClientSampleID[" + i + "]"];
+                var additionalComments = Request.Form["AdditionalComments[" + i + "]"];
+                var acidStables = Request.Form["AcidStables[" + i + "]"];
+
+                System.Diagnostics.Debug.WriteLine("columna traida " + ClientSampleID);
+                System.Diagnostics.Debug.WriteLine("celda: "+i);
+
+                if (!String.IsNullOrEmpty(ClientSampleID))
+                {
+                 //   _TableForm.Add(new Movimiento.DetalleM { ClientSampleID = ClientSampleID, AcidStables = acidStables, AdditionalComments = additionalComments });
+                }
+            }
+            return Redirect("/Home/Mov");
+        }
 
         public IActionResult Privacy()
         {
