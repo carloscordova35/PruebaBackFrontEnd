@@ -1,0 +1,98 @@
+﻿@model IEnumerable<PruebaBackFrontEnd.Models.Producto>
+
+@{
+    ViewData["Title"] = "Productos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Productos</h1>
+
+<p>
+    <a asp-action="Create">Crear nuevo</a>
+</p>
+
+<form asp-action="Productos" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Buscar: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Buscar" class="btn btn-primary" /> |
+            <a asp-action="Productos">Mostrar todos</a>
+        </p>
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Marca
+            </th>
+            <th>
+                <a asp-action="Productos" asp-route-sortOrder="@ViewData["ordenDescr"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Descripcion</a>
+            </th>
+            <th>
+                <a asp-action="Productos" asp-route-sortOrder="@ViewData["ordenCatg"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Categoria</a>
+            </th>
+            <th>
+                <a asp-action="Productos" asp-route-sortOrder="@ViewData["ordenCodigo"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Codigo</a>
+            </th>
+            <th>
+                Precio
+            </th>
+
+            <th>
+                Existencia
+            </th>
+            <th>
+                Fecha Ult Abast
+            </th>
+            <th>
+                Cant ult comp
+            </th>
+
+            <th>
+                Promedio
+            </th>
+            <th></th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.marca)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.categoria)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.codigo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.precio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.existenciag)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fechaultcomp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ultcomp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.linea)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.codigo">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.codigo">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.codigo">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -18,6 +18,8 @@ namespace PruebaBackFrontEnd
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            appParam.apiBaseUrl = configuration["WebAPIBaseUrl"];
         }
 
         public IConfiguration Configuration { get; }

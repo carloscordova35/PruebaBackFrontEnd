@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using PruebaBackFrontEnd.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace PruebaBackFrontEnd.Controllers
@@ -13,15 +16,91 @@ namespace PruebaBackFrontEnd.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public AppDBContext _context;
+
+        public HomeController(ILogger<HomeController> logger, AppDBContext master)
         {
             _logger = logger;
+
+            _context = master;
         }
 
         public IActionResult Index()
         {
             return View();
         }
+
+        public IActionResult Clientes()
+        {
+            var clientes = _context.Cliente.ToList();
+            return View(clientes);
+        }
+
+        public IActionResult Proveedores()
+        {
+            var prove = _context.Proveedor.ToList();
+            return View(prove);
+        }
+
+        public async Task<IActionResult> Productos(string sortOrder, string searchString)
+        {
+            ViewData["ordenCodigo"] = String.IsNullOrEmpty(sortOrder) ? "cod_desc" : "";
+            ViewData["ordenDescr"] = String.IsNullOrEmpty(sortOrder) ? "desc_desc" : "";
+            ViewData["ordenCatg"] = String.IsNullOrEmpty(sortOrder) ? "cat_desc" : "";//sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
+
+            List<Producto> prods = new List<Producto>();
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+
+                   // System.Diagnostics.Debug.WriteLine(appParam.apiBaseUrl + "/productos");
+                    using (var response = await httpClient.GetAsync(appParam.apiBaseUrl + "/productos"))
+                    {
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+
+                        //  System.Diagnostics.Debug.WriteLine("respuesta " + apiResponse);
+
+                       prods = JsonConvert.DeserializeObject<List<Producto>>(apiResponse);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Ocurrio un error al llegar a la api: "+e.Message);
+            }
+
+            //   var students = from s in _context.Producto
+            //                select s;
+
+           var students = from s in prods
+            select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                students = students.Where(s => s.descripcion.Contains(searchString)
+                                       || s.codigo.Contains(searchString)
+                                       || s.categoria.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "desc_desc":
+                    students = students.OrderBy(s => s.descripcion);
+                    break;
+                case "cat_desc":
+                    students = students.OrderBy(s => s.categoria);
+                    break;
+                case "cod_desc":
+                    students = students.OrderBy(s => s.codigo);
+                    break;
+                default:
+                    students = students.OrderBy(s => s.codigo);
+                    break;
+            }
+            return View(students.ToList());
+        }
+
 
         public IActionResult Privacy()
         {

@@ -17,11 +17,27 @@ namespace PruebaBackFrontEnd.Models
         {
         }
 
-         public virtual DbSet<Producto> Producto { get; set; }
-      //  public virtual DbSet<Empresa> Empresas { get; set; }
-     //   public virtual DbSet<Usuario> Usuarios { get; set; }
+        public virtual DbSet<Producto> Producto { get; set; }
+        public virtual DbSet<Proveedor> Proveedor { get; set; }
+        public virtual DbSet<Cliente> Cliente { get; set; }
+        public virtual DbSet<Compra> Compra { get; set; }
+        public virtual DbSet<CompraDet> CompraDet { get; set; }
+        public virtual DbSet<Multialmacen> Multialmacen { get; set; }
+        public virtual DbSet<Venta> Venta { get; set; }
+        public virtual DbSet<VentaDet> VentaDet { get; set; }
 
 
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Multialmacen>()
+        //        .HasAlternateKey(c => c.almacen)
+        //        .HasName("PK_almacen");
+        //}
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Multialmacen>().HasKey(l => new { l.codigo, l.almacen });
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

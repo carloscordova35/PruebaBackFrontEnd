@@ -17,5 +17,10 @@ namespace PruebaBackFrontEnd.Models
         public string codigobarra { get; set; }
         public double precio { get; set; }
         public int status { get; set; }
+        public double existenciag{ get; set; }
+        public string categoria { get; set; }
+        public DateTime? fechaultcomp { get; set; }
+        public string marca { get; set; }
+        public double ultcomp { get; set; }
     }
 }
