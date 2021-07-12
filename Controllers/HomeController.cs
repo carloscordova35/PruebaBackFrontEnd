@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace PruebaBackFrontEnd.Controllers
@@ -74,31 +75,31 @@ namespace PruebaBackFrontEnd.Controllers
             //   var students = from s in _context.Producto
             //                select s;
 
-           var students = from s in prods
+           var products = from s in prods
             select s;
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                students = students.Where(s => s.descripcion.Contains(searchString)
+                products = products.Where(s => s.descripcion.Contains(searchString)
                                        || s.codigo.Contains(searchString)
                                        || s.categoria.Contains(searchString));
             }
             switch (sortOrder)
             {
                 case "desc_desc":
-                    students = students.OrderBy(s => s.descripcion);
+                    products = products.OrderBy(s => s.descripcion);
                     break;
                 case "cat_desc":
-                    students = students.OrderBy(s => s.categoria);
+                    products = products.OrderBy(s => s.categoria);
                     break;
                 case "cod_desc":
-                    students = students.OrderBy(s => s.codigo);
+                    products = products.OrderBy(s => s.codigo);
                     break;
                 default:
-                    students = students.OrderBy(s => s.codigo);
+                    products = products.OrderBy(s => s.codigo);
                     break;
             }
-            return View(students.ToList());
+            return View(products.ToList());
         }
 
         public IActionResult CrearMov() {
@@ -110,21 +111,77 @@ namespace PruebaBackFrontEnd.Controllers
             return View();
         }
 
-        public IActionResult AgregaMov(Movimiento movn) {
+        public async Task<IActionResult> AgregaMov(Movimiento movn) {
 
             System.Diagnostics.Debug.WriteLine("tipo: " + movn.tipomov);
 
             IList<Movimiento.DetalleM> _TableForm = new List<Movimiento.DetalleM>();
 
+            string apiurl = "";
+
+            VentaMod venta = new VentaMod();
+            CompraMod compra = new CompraMod();
+
+            if (movn.tipomov.Equals("V"))
+            {
+                apiurl = appParam.apiBaseUrl + "/subeventa";
+            }
+            else if (movn.tipomov.Equals("C"))
+            {
+                apiurl = appParam.apiBaseUrl + "/subecompra";
+            }
+            try
+            {
+
+                using (var client = new HttpClient())
+                using (var request = new HttpRequestMessage(HttpMethod.Post, apiurl))
+                {
+                    var jsonv = JsonConvert.SerializeObject(venta); 
+                    var jsonc = JsonConvert.SerializeObject(compra);
+
+                    string json = "";
+
+                    if (movn.tipomov.Equals("C"))
+                    {
+
+                        json = jsonc;
+                    }
+                    else {
+                        json = jsonv;
+                    }
+
+                        using (var stringContent = new StringContent(json, Encoding.UTF8, "application/json"))
+                    {
+                        request.Content = stringContent;
+
+                        using (var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
+                                                          .ConfigureAwait(false))
+                        {
+                            response.EnsureSuccessStatusCode();
+                            
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ViewData["message"] = "error";
+                System.Diagnostics.Debug.WriteLine("Ocurrio un error al llegar a la api: " + e.Message);
+            }
+
             //Loop through the forms
             for (int i = 0; i <= Request.Form.Count; i++)
             {
-                var ClientSampleID = Request.Form["ClientSampleID[" + i + "]"];
-                var additionalComments = Request.Form["AdditionalComments[" + i + "]"];
-                var acidStables = Request.Form["AcidStables[" + i + "]"];
 
-                System.Diagnostics.Debug.WriteLine("columna traida " + ClientSampleID);
-                System.Diagnostics.Debug.WriteLine("celda: "+i);
+                var ClientSampleID = Request.Form["codigo[" + i + "]"];
+                var additionalComments = Request.Form["cantidad[" + i + "]"];
+                var acidStables = Request.Form["precio[" + i + "]"];
+                if (!String.IsNullOrEmpty(ClientSampleID))
+                System.Diagnostics.Debug.WriteLine("columna a " + ClientSampleID);
+                if (!String.IsNullOrEmpty(additionalComments))
+                    System.Diagnostics.Debug.WriteLine("columna b" + additionalComments);
+                if (!String.IsNullOrEmpty(acidStables))
+                    System.Diagnostics.Debug.WriteLine("columna c " + acidStables);
 
                 if (!String.IsNullOrEmpty(ClientSampleID))
                 {

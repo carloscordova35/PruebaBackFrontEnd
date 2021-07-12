@@ -5,6 +5,7 @@ using PruebaBackFrontEnd.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PruebaBackFrontEnd.Controllers
@@ -86,6 +87,10 @@ namespace PruebaBackFrontEnd.Controllers
         [Obsolete]
         public ActionResult SubeCompra(CompraMod compra)
         {
+
+            string jsonString = JsonSerializer.Serialize(compra);
+
+            System.Diagnostics.Debug.WriteLine("Json recibido en recibo:  " + jsonString);
             try
             {
                 var prov = _context.Proveedor.Find(compra.proveedor);
@@ -154,6 +159,10 @@ namespace PruebaBackFrontEnd.Controllers
         [Obsolete]
         public ActionResult SubeVenta(VentaMod venta)
         {
+
+            string jsonString = JsonSerializer.Serialize(venta);
+
+            System.Diagnostics.Debug.WriteLine("Json recibido en recibo:  " + jsonString);
             try
             {
                 var clie = _context.Cliente.Find(venta.cliente);

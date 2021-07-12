@@ -5,12 +5,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 <h1>Mov</h1>
 
 <h4>Venta</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="AgregaMov">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -42,11 +43,6 @@
                 <span asp-validation-for="nit" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="status" class="control-label"></label>
-                <input asp-for="status" class="form-control" />
-                <span asp-validation-for="status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="referencia" class="control-label"></label>
                 <input asp-for="referencia" class="form-control" />
                 <span asp-validation-for="referencia" class="text-danger"></span>
@@ -75,26 +71,30 @@
                         <table id="submissionTable" class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <td>Sample ID</td>
-                                    <td>Additional Comments</td>
-                                    <td>Acid-stable amino acids</td>
+                                    <td>Codigo</td>
+                                    <td>Producto</td>
+                                    <td>Cantidad</td>
+                                    <td>Precio</td>
                                 </tr>
                             </thead>
 
                             <tr id="tablerow0">
                                 <td>
                                     <div class="editor-field">
-                                        <input class="text-box single-line" name="ClientSampleID[0]" type="text" value="" required="required" />
+                                        <input class="text-box single-line" name="codigo[0]" type="text" value="" required="required" />
+                                    </div>
+                                </td>
+                                <td>
+                                    Descripcion
+                                </td>
+                                <td>
+                                    <div class="editor-field">
+                                        <input class="text-box single-line" name="cantidad[0]" type="text" value="" required="required" />
                                     </div>
                                 </td>
                                 <td>
                                     <div class="editor-field">
-                                        <input class="text-box single-line" name="AdditionalComments[0]" type="text" value="" required="required" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="editor-field">
-                                        <input class="text-box single-line" name="AcidStables[0]" type="text" value="" />
+                                        <input class="text-box single-line" name="precio[0]" type="text" value="" />
                                     </div>
                                 </td>
                                 <td>
@@ -105,10 +105,11 @@
 
                         </table>
                         <p>
-                            <button id="add" class="btn btn-primary">Add</button>
+                            <button id="add" class="btn btn-primary">Agregar otro</button>
                         </p>
+                        <br />
                     </fieldset>
-                    <button id="save" class="btn btn-primary">Crear</button>
+                    <button id="save" class="btn btn-primary">Crear movimiento</button>
                 }
 
                 <hr />
@@ -118,7 +119,21 @@
             </div>
         </form>
     </div>
+    <div>
+        @{
+            string query = (ViewData["message"] ?? string.Empty) as string;
+            if (!string.IsNullOrEmpty(query))
+            {
+                <br />
+                <div class="alert alert-danger alert-dismissible fade in">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong>Error</strong> Usuario no valido
+                </div>
+            }
+        }
+    </div>
 </div>
+
 
 <div>
     <a asp-action="Index">Back to List</a>
@@ -133,13 +148,16 @@
         $(function () {
             $('#add').click(function () {
                 $('<tr id="tablerow' + counter + '"><td>' +
-                    '<input type="text" class="text-box single-line" name="ClientSampleID[' + counter + ']" value="" required="required" />' +
+                    '<input type="text" class="text-box single-line" name="codigo[' + counter + ']" value="" required="required" />' +
                     '</td>' +
                     '<td>' +
-                    '<input type="text" class="text-box single-line" name="AdditionalComments[' + counter + ']" value="" required="required" />' +
+                    'Descripcion' +
+                    '</td >' +
+                    '<td>' +
+                    '<input type="text" class="text-box single-line" name="cantidad[' + counter + ']" value="" required="required" />' +
                     '</td>' +
                     '<td>' +
-                    '<input type="text" class="text-box single-line" name="AcidStables[' + counter + ']" value="" required="required" />' +
+                    '<input type="text" class="text-box single-line" name="precio[' + counter + ']" value="" required="required" />' +
                     '</td>' +
                     '<td>' +
                     '<button type="button" class="btn btn-primary" onclick="removeTr(' + counter + ');">Delete</button>' +
