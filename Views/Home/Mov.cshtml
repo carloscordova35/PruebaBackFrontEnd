@@ -77,12 +77,12 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="almacen" class="control-label"></label>
-                    <select id="select-state" name="clieprov" placeholder="Seleccione un almacen.">
+                    <select id="select-state" name="almacen" placeholder="Seleccione un almacen.">
                         @{
                             foreach (var listt in ViewData["almacenes"] as IEnumerable<Almacen>)
                             {
 
-                                <option value="@listt.almacen">@lis.nombre</option>
+                                <option value="@listt.almacen">@listt.nombre</option>
                             }
 
                         }
@@ -140,12 +140,12 @@
                                     </td>
                                     <td>
                                         <div class="editor-field">
-                                            <input class="text-box single-line" name="cantidad[0]" type="text" value="" required="required" />
+                                            <input class="text-box single-line" name="cantidad[0]" type="number" value=""  required="required" step="0.01" />
                                         </div>
                                     </td>
                                     <td>
                                         <div class="editor-field">
-                                            <input class="text-box single-line" name="precio[0]" type="text" value="" />
+                                            <input class="text-box single-line" name="precio[0]" type="number" value="" step="0.01"/>
                                         </div>
                                     </td>
                                     <td>

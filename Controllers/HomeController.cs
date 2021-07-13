@@ -124,9 +124,11 @@ namespace PruebaBackFrontEnd.Controllers
             }
             else {
                 tipomov = "C";
-                ViewData["almacenes"] = _context.Almacen.ToList();
+               
                 ViewData["lista"] = _context.Proveedor.ToList();
             }
+            ViewData["almacenes"] = _context.Almacen.ToList();
+            ViewData["productos"] = _context.Producto.ToList();
             ViewData["tipom"] = tipomov;
             return View();
         }
@@ -145,18 +147,86 @@ namespace PruebaBackFrontEnd.Controllers
             if (movn.tipomov.Equals("V"))
             {
                 apiurl = appParam.apiBaseUrl + "/subeventa";
+                venta.cliente = movn.clieprov;
+                venta.almacen = movn.almacen;
+                venta.fecha = movn.fecha;
+                venta.nit = movn.nit;
+                venta.total = movn.total;
+                venta.referencia = movn.referencia;
+                                       
             }
             else if (movn.tipomov.Equals("C"))
             {
+                compra.proveedor = movn.clieprov;
+                compra.almacen = movn.almacen;
+                compra.fecha = movn.fecha;
+                compra.nit = movn.nit;
+                compra.total = movn.total;
+                compra.referencia = movn.referencia;
                 apiurl = appParam.apiBaseUrl + "/subecompra";
             }
+           
+            //Loop through the forms
+            for (int i = 0; i <= Request.Form.Count; i++)
+            {
+                string codigo = "";
+                double cantidad = 0.0;
+                double precio = 0.0;
+                var ClientSampleID = Request.Form["codigo[" + i + "]"];
+                var additionalComments = Request.Form["cantidad[" + i + "]"];
+                var acidStables = Request.Form["precio[" + i + "]"];
+                if (!String.IsNullOrEmpty(ClientSampleID))
+                   codigo = ClientSampleID;
+                System.Diagnostics.Debug.WriteLine("columna a " + ClientSampleID);
+                if (!String.IsNullOrEmpty(additionalComments))
+                    System.Diagnostics.Debug.WriteLine("columna b" + additionalComments);
+                cantidad = Convert.ToDouble(additionalComments);
+                // dtv.cantidad = Double.Parse(additionalComments);
+                //dt.cantidad = 0.0;
+              
+                if (!String.IsNullOrEmpty(acidStables))
+                    System.Diagnostics.Debug.WriteLine("columna c " + acidStables);
+                // dt.precio = Double.Parse(acidStables);
+                // dtv.precio = Double.Parse(acidStables);
+                precio = Convert.ToDouble(acidStables);
+               
+
+                if (codigo != null && cantidad != 0 && precio != 0)
+                {
+
+                    if (movn.tipomov.Equals("C"))
+                    {
+                        Detalle dt = new Detalle();
+                        dt.codigo=codigo;
+                        dt.cantidad = cantidad;
+                        dt.precio = precio;
+                        compra.detalle.Add(dt);
+                    }
+                    else {
+                        Detallev dtv = new Detallev();
+                        dtv.codigo = codigo;
+                        dtv.cantidad = cantidad;
+                        dtv.precio = precio;
+                        venta.detalle.Add(dtv);
+                    }
+                }
+                if (!String.IsNullOrEmpty(ClientSampleID))
+                {
+                 //   _TableForm.Add(new Movimiento.DetalleM { ClientSampleID = ClientSampleID, AcidStables = acidStables, AdditionalComments = additionalComments });
+                }
+            }
+
+            int codigorespuesta = 0;
+            string respuesta = "";
+
+
             try
             {
 
                 using (var client = new HttpClient())
                 using (var request = new HttpRequestMessage(HttpMethod.Post, apiurl))
                 {
-                    var jsonv = JsonConvert.SerializeObject(venta); 
+                    var jsonv = JsonConvert.SerializeObject(venta);
                     var jsonc = JsonConvert.SerializeObject(compra);
 
                     string json = "";
@@ -166,11 +236,12 @@ namespace PruebaBackFrontEnd.Controllers
 
                         json = jsonc;
                     }
-                    else {
+                    else
+                    {
                         json = jsonv;
                     }
 
-                        using (var stringContent = new StringContent(json, Encoding.UTF8, "application/json"))
+                    using (var stringContent = new StringContent(json, Encoding.UTF8, "application/json"))
                     {
                         request.Content = stringContent;
 
@@ -178,8 +249,11 @@ namespace PruebaBackFrontEnd.Controllers
                                                           .ConfigureAwait(false))
                         {
                             response.EnsureSuccessStatusCode();
-                            
+
+                            System.Diagnostics.Debug.WriteLine("respuesta " + response.Content.ReadAsStringAsync());
                         }
+
+                        
                     }
                 }
             }
@@ -189,25 +263,6 @@ namespace PruebaBackFrontEnd.Controllers
                 System.Diagnostics.Debug.WriteLine("Ocurrio un error al llegar a la api: " + e.Message);
             }
 
-            //Loop through the forms
-            for (int i = 0; i <= Request.Form.Count; i++)
-            {
-
-                var ClientSampleID = Request.Form["codigo[" + i + "]"];
-                var additionalComments = Request.Form["cantidad[" + i + "]"];
-                var acidStables = Request.Form["precio[" + i + "]"];
-                if (!String.IsNullOrEmpty(ClientSampleID))
-                System.Diagnostics.Debug.WriteLine("columna a " + ClientSampleID);
-                if (!String.IsNullOrEmpty(additionalComments))
-                    System.Diagnostics.Debug.WriteLine("columna b" + additionalComments);
-                if (!String.IsNullOrEmpty(acidStables))
-                    System.Diagnostics.Debug.WriteLine("columna c " + acidStables);
-
-                if (!String.IsNullOrEmpty(ClientSampleID))
-                {
-                 //   _TableForm.Add(new Movimiento.DetalleM { ClientSampleID = ClientSampleID, AcidStables = acidStables, AdditionalComments = additionalComments });
-                }
-            }
             return Redirect("/Home/Mov");
         }
 
