@@ -3,7 +3,7 @@
 -- Product home page: http://www.devart.com/dbforge/sql/studio
 -- Script date 11/07/2021 23:35:28
 -- Server version: 11.00.7001
---
+-- SCRIPT PARA CREAR LA BASE DE DATOS
 
 
 SET DATEFORMAT ymd

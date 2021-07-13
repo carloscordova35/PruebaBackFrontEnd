@@ -107,7 +107,27 @@ namespace PruebaBackFrontEnd.Controllers
             return View();
         }
 
-        public IActionResult Mov() {
+        public IActionResult Mov(string tipomov) {
+
+            System.Diagnostics.Debug.WriteLine("el tipo fue: " + tipomov);
+            if (tipomov != null)
+            {
+                if (tipomov.Equals("V"))
+                {
+
+                    ViewData["lista"] = _context.Cliente.ToList();
+                }
+                else
+                {
+                    ViewData["lista"] = _context.Proveedor.ToList();
+                }
+            }
+            else {
+                tipomov = "C";
+                ViewData["almacenes"] = _context.Almacen.ToList();
+                ViewData["lista"] = _context.Proveedor.ToList();
+            }
+            ViewData["tipom"] = tipomov;
             return View();
         }
 

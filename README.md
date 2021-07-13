@@ -5,7 +5,7 @@
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-Necesito mas experiencia en desarrollo y por eso busco esta oportuidad, busco mas experiencia en:
+Necesito mas experiencia en desarrollo y por eso busco esta oportunidad, busco mas experiencia en:
 
 - Desarrollo web
 - Bases de datos

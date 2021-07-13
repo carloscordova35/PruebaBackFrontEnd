@@ -25,6 +25,8 @@ namespace PruebaBackFrontEnd.Models
         public virtual DbSet<Multialmacen> Multialmacen { get; set; }
         public virtual DbSet<Venta> Venta { get; set; }
         public virtual DbSet<VentaDet> VentaDet { get; set; }
+        public virtual DbSet<Almacen>Almacen { get; set; }
+
 
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)

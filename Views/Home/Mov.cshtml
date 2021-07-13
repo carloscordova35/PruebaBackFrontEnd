@@ -12,14 +12,33 @@
 <hr />
 <div class="row">
     <div class="col-md-6">
-        <form asp-action="AgregaMov">
+        <form asp-action="Mov">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
                 <label class="control-label">Tipo de movimiento</label>
-                <select name="tipomov">
+                <select id="ddltype" name="tipomov">
                     <option value="C">Compra</option>
-                    <option value="V">Venta</option>
+                    @{
+
+                        string quer = (ViewData["tipom"] ?? string.Empty) as string;
+                        if (!string.IsNullOrEmpty(quer))
+                        {
+                            if (quer.Equals("V"))
+                            {
+                                <option selected value="V">Venta</option>
+                            }
+                            else
+                            {
+                                <option value="V">Venta</option>
+                            }
+                        }
+                        else
+                        {
+                            <option value="V">Venta</option>
+                        }
+                    }
+
                 </select>
             </div>
             <div class="form-group">
@@ -29,158 +48,200 @@
             </div>
             <div class="form-group">
                 <label asp-for="clieprov" class="control-label"></label>
-                <input asp-for="clieprov" class="form-control" />
-                <span asp-validation-for="clieprov" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="almacen" class="control-label"></label>
-                <input asp-for="almacen" class="form-control" />
-                <span asp-validation-for="almacen" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="nit" class="control-label"></label>
-                <input asp-for="nit" class="form-control" />
-                <span asp-validation-for="nit" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="referencia" class="control-label"></label>
-                <input asp-for="referencia" class="form-control" />
-                <span asp-validation-for="referencia" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="total" class="control-label"></label>
-                <input asp-for="total" class="form-control" />
-                <span asp-validation-for="total" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="impuesto" class="control-label"></label>
-                <input asp-for="impuesto" class="form-control" />
-                <span asp-validation-for="impuesto" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="descuento" class="control-label"></label>
-                <input asp-for="descuento" class="form-control" />
-                <span asp-validation-for="descuento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                @using (Html.BeginForm())
-                {
-                    @Html.ValidationSummary(true)
+                <select id="select-state" name="clieprov" placeholder="Pick a state...">
 
-                    <fieldset>
-                        <table id="submissionTable" class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <td>Codigo</td>
-                                    <td>Producto</td>
-                                    <td>Cantidad</td>
-                                    <td>Precio</td>
-                                </tr>
-                            </thead>
+                    @{
+                        if (!string.IsNullOrEmpty(quer))
+                        {
+                            if (quer.Equals("V"))
+                            {
+                                foreach (var lis in ViewData["lista"] as IEnumerable<Cliente>)
+                                {
 
-                            <tr id="tablerow0">
-                                <td>
-                                    <div class="editor-field">
-                                        <input class="text-box single-line" name="codigo[0]" type="text" value="" required="required" />
-                                    </div>
-                                </td>
-                                <td>
-                                    Descripcion
-                                </td>
-                                <td>
-                                    <div class="editor-field">
-                                        <input class="text-box single-line" name="cantidad[0]" type="text" value="" required="required" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="editor-field">
-                                        <input class="text-box single-line" name="precio[0]" type="text" value="" />
-                                    </div>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-primary" onclick="removeTr(0);">Delete</button>
-                                </td>
-                                <td></td>
-                            </tr>
+                                    <option value="@lis.id">@lis.nombre</option>
+                                }
+                            }
+                            else
+                            {
+                                foreach (var lis in ViewData["lista"] as IEnumerable<Proveedor>)
+                                {
 
-                        </table>
-                        <p>
-                            <button id="add" class="btn btn-primary">Agregar otro</button>
-                        </p>
-                        <br />
-                    </fieldset>
-                    <button id="save" class="btn btn-primary">Crear movimiento</button>
-                }
+                                    <option value="@lis.id">@lis.nombre</option>
+                                    }
 
-                <hr />
-            </div>
-            <div class="form-group">
+                                }
+                            }
+                        }
 
-            </div>
-        </form>
-    </div>
-    <div>
-        @{
-            string query = (ViewData["message"] ?? string.Empty) as string;
-            if (!string.IsNullOrEmpty(query))
-            {
-                <br />
-                <div class="alert alert-danger alert-dismissible fade in">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <strong>Error</strong> Usuario no valido
+                    </select>
                 </div>
+                <div class="form-group">
+                    <label asp-for="almacen" class="control-label"></label>
+                    <select id="select-state" name="clieprov" placeholder="Seleccione un almacen.">
+                        @{
+                            foreach (var listt in ViewData["almacenes"] as IEnumerable<Almacen>)
+                            {
+
+                                <option value="@listt.almacen">@lis.nombre</option>
+                            }
+
+                        }
+                    </select>
+</div>
+                <div class="form-group">
+                    <label asp-for="nit" class="control-label"></label>
+                    <input asp-for="nit" class="form-control" />
+                    <span asp-validation-for="nit" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="referencia" class="control-label"></label>
+                    <input asp-for="referencia" class="form-control" />
+                    <span asp-validation-for="referencia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="total" class="control-label"></label>
+                    <input asp-for="total" class="form-control" />
+                    <span asp-validation-for="total" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="impuesto" class="control-label"></label>
+                    <input asp-for="impuesto" class="form-control" />
+                    <span asp-validation-for="impuesto" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="descuento" class="control-label"></label>
+                    <input asp-for="descuento" class="form-control" />
+                    <span asp-validation-for="descuento" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.ValidationSummary(true)
+
+                        <fieldset>
+                            <table id="submissionTable" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td>Codigo</td>
+                                        <td>Producto</td>
+                                        <td>Cantidad</td>
+                                        <td>Precio</td>
+                                    </tr>
+                                </thead>
+
+                                <tr id="tablerow0">
+                                    <td>
+                                        <div class="editor-field">
+                                            <input class="text-box single-line" name="codigo[0]" type="text" value="" required="required" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        Descripcion
+                                    </td>
+                                    <td>
+                                        <div class="editor-field">
+                                            <input class="text-box single-line" name="cantidad[0]" type="text" value="" required="required" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="editor-field">
+                                            <input class="text-box single-line" name="precio[0]" type="text" value="" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary" onclick="removeTr(0);">Delete</button>
+                                    </td>
+                                    <td></td>
+                                </tr>
+
+                            </table>
+                            <p>
+                                <button id="add" class="btn btn-primary">Agregar otro</button>
+                            </p>
+                            <br />
+                        </fieldset>
+                        <button id="save" class="btn btn-primary">Crear movimiento</button>
+                    }
+
+                    <hr />
+                </div>
+                <div class="form-group">
+
+                </div>
+            </form>
+        </div>
+        <div>
+            @{
+                string query = (ViewData["message"] ?? string.Empty) as string;
+                if (!string.IsNullOrEmpty(query))
+                {
+                    <br />
+                    <div class="alert alert-danger alert-dismissible fade in">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <strong>Error</strong> Usuario no valido
+                    </div>
+                }
             }
-        }
+        </div>
     </div>
-</div>
 
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
 
 
 
-@section Scripts {
+    @section Scripts {
 
-    <script type="text/javascript">
-        var counter = 1;
-        $(function () {
-            $('#add').click(function () {
-                $('<tr id="tablerow' + counter + '"><td>' +
-                    '<input type="text" class="text-box single-line" name="codigo[' + counter + ']" value="" required="required" />' +
-                    '</td>' +
-                    '<td>' +
-                    'Descripcion' +
-                    '</td >' +
-                    '<td>' +
-                    '<input type="text" class="text-box single-line" name="cantidad[' + counter + ']" value="" required="required" />' +
-                    '</td>' +
-                    '<td>' +
-                    '<input type="text" class="text-box single-line" name="precio[' + counter + ']" value="" required="required" />' +
-                    '</td>' +
-                    '<td>' +
-                    '<button type="button" class="btn btn-primary" onclick="removeTr(' + counter + ');">Delete</button>' +
-                    '</td>' +
-                    '</tr>').appendTo('#submissionTable');
-                counter++;
+        <script type="text/javascript">
+            var counter = 1;
+            $(function () {
+                $('#add').click(function () {
+                    $('<tr id="tablerow' + counter + '"><td>' +
+                        '<input type="text" class="text-box single-line" name="codigo[' + counter + ']" value="" required="required" />' +
+                        '</td>' +
+                        '<td>' +
+                        'Descripcion' +
+                        '</td >' +
+                        '<td>' +
+                        '<input type="text" class="text-box single-line" name="cantidad[' + counter + ']" value="" required="required" />' +
+                        '</td>' +
+                        '<td>' +
+                        '<input type="text" class="text-box single-line" name="precio[' + counter + ']" value="" required="required" />' +
+                        '</td>' +
+                        '<td>' +
+                        '<button type="button" class="btn btn-primary" onclick="removeTr(' + counter + ');">Delete</button>' +
+                        '</td>' +
+                        '</tr>').appendTo('#submissionTable');
+                    counter++;
+                    return false;
+                });
+            });
+            function removeTr(index) {
+                if (counter > 1) {
+                    $('#tablerow' + index).remove();
+                    counter--;
+                }
                 return false;
-            });
-        });
-        function removeTr(index) {
-            if (counter > 1) {
-                $('#tablerow' + index).remove();
-                counter--;
             }
-            return false;
-        }
-        $(document).ready(function () {
+            $(document).ready(function () {
 
-            $("#save").click(function () {
-                $("form").attr("action", "/Home/AgregaMov");
+                $("#save").click(function () {
+                    $("form").attr("action", "/Home/AgregaMov");
+                });
+
             });
-
-        });
-    </script>
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+            $(document).ready(function () {
+                $('#ddltype').on('change', function () {
+                    this.form.submit();
+                });
+            });
+            $(document).ready(function () {
+                $('select').selectize({
+                    sortField: 'text'
+                });
+            });
+        </script>
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
